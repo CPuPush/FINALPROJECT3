@@ -1,4 +1,6 @@
-"use strict";
+const { hashPassword } = require("../helper/bcrypt");
+
+("use strict");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -61,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
             args: true,
             msg: "gender cant be empty",
           },
-          // ! this not fix
           isIn: {
             args: [["male", "female"]],
             msg: "only fill in gender with male or female",
@@ -75,14 +76,12 @@ module.exports = (sequelize, DataTypes) => {
             args: true,
             msg: "Role cant be empty",
           },
-          // ! this not fix
           isIn: {
             args: [[0, 1]],
             msg: "only fill in role with admin or customer",
           },
         },
       },
-      // ! kurang field username empty
       balance: {
         type: DataTypes.INTEGER,
         validate: {
@@ -97,7 +96,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       hooks: {
-        beforeValidate: (user, options) => {
+        beforeCreate: (user, options) => {
+          user.password = hashPassword(user.password);
           user.balance = 0;
         },
       },
