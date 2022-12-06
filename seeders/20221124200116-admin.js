@@ -1,4 +1,6 @@
-'use strict';
+"use strict";
+
+const { hashPassword } = require("../helper/bcrypt");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,17 +14,22 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    await queryInterface.bulkInsert('Users', [{
-      full_name: 'Admin Ngaco',
-      email: "adminngaco@gmail.com",
-      password: "123456",
-      gender: "male",
-      role: 0,
-      balance: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }, 
-    ], {});
+    await queryInterface.bulkInsert(
+      "Users",
+      [
+        {
+          full_name: "Admin Ngaco",
+          email: "adminngaco@gmail.com",
+          password: hashPassword("123456"),
+          gender: "male",
+          role: 0,
+          balance: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+      {}
+    );
   },
 
   async down(queryInterface, Sequelize) {
@@ -32,5 +39,5 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-  }
+  },
 };
