@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     /**
@@ -15,33 +13,41 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User);
     }
   }
-  Category.init({
-    UserId: DataTypes.INTEGER,
-    type: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: "type category cant be empty"
-        }
-      }
-    },
-    sold_product_amount: {
-      type: DataTypes.INTEGER,
-      validate: {
-        notEmpty: {
-          args: true,
-          msg: "sold_product_amount cant be empty"
+  Category.init(
+    {
+      UserId: DataTypes.INTEGER,
+      type: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "type category cant be empty",
+          },
         },
-        isInt: {
-          args: true, 
-          msg: "sold_product_amount has integer data type"
-        }
-      }
+      },
+      sold_product_amount: {
+        type: DataTypes.INTEGER,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: "sold_product_amount cant be empty",
+          },
+          isInt: {
+            args: true,
+            msg: "sold_product_amount has integer data type",
+          },
+        },
+      },
+    },
+    {
+      hooks: {
+        beforeCreate: (user, options) => {
+          user.sold_product_amount = 0;
+        },
+      },
+      sequelize,
+      modelName: "Category",
     }
-  }, {
-    sequelize,
-    modelName: 'Category',
-  });
+  );
   return Category;
 };
