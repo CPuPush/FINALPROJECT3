@@ -92,11 +92,21 @@ class UserController {
 
       await User.update(data, {
         where: {
-          id: userId,
+          id: +userId,
         },
       });
 
-      return res.status(200).json({ msg: "Successfull" });
+      const userFind = await User.findByPk(userId);
+
+      return res.status(200).json({
+        user: {
+          id: userFind.id,
+          full_name: userFind.full_name,
+          email: userFind.email,
+          createdAt: userFind.createdAt,
+          updatedAt: userFind.updatedAt,
+        },
+      });
     } catch (error) {
       let errorMes = error.name;
       if (
