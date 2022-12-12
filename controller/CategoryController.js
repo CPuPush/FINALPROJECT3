@@ -59,6 +59,10 @@ class CategoryController {
         type,
       };
 
+      if (!type) {
+        return res.status(400).json({message: "type cannot be empty"});
+      }
+
       await Category.update(data, {
         where: {
           id: +categoryId,
@@ -69,6 +73,9 @@ class CategoryController {
         attributes: {
           exclude: ["UserId"],
         },
+        where: {
+          id: categoryId,
+        }
       });
 
       return res.status(200).json({ category: findCategory });
