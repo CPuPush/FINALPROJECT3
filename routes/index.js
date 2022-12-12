@@ -6,6 +6,7 @@ const CategoryController = require("../controller/CategoryController");
 const authorizationCategory = require("../middleware/authorizationCategory");
 const ProductController = require("../controller/ProductController");
 const authRole = require("../middleware/authRole");
+const TransactionController = require("../controller/TransactionController");
 
 // ! USER
 router.post("/users/register", UserController.userRegister);
@@ -65,5 +66,12 @@ router.delete(
   authentication,
   ProductController.deleteProduct
 );
+
+// ! Transaction Histories
+router.post(
+  "/transactions",
+  authentication,
+  TransactionController.createTransaction
+); // Kurang menghilangkan validate min Stock di product
 
 module.exports = router;
