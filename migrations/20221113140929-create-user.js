@@ -13,19 +13,26 @@ module.exports = {
         type: Sequelize.STRING
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true,
       },
       password: {
         type: Sequelize.STRING
       },
       gender: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM,
+        values: [
+          'male', 'female'
+        ]
       },
       role: {
-        type: Sequelize.INTEGER
+        type: Sequelize.ENUM,
+        values: [
+          "admin", "customer"
+        ]
       },
       balance: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       createdAt: {
         allowNull: false,

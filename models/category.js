@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { unsubscribe } = require('../routes');
 module.exports = (sequelize, DataTypes) => {
   class Category extends Model {
     /**
@@ -12,16 +13,35 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Product);
-      this.belongsTo(models.User);
     }
   }
   Category.init({
-    UserId: DataTypes.INTEGER,
-    type: DataTypes.STRING,
-    sold_product_amount: DataTypes.INTEGER
+    type: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "type cannot be empty"
+        }
+      }
+    },
+    sold_product_amount: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: "sold_product_amount cannot be empty"
+        }
+      }
+    }
   }, {
     sequelize,
     modelName: 'Category',
+    hooks:{
+      beforeCreate: (category, opt)=>{
+        category.sold_product_amount = 0
+      }
+    }
   });
   return Category;
 };
