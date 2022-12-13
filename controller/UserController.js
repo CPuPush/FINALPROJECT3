@@ -1,5 +1,6 @@
 const { hashPassword, comparePassword } = require("../helper/bcrypt");
-const {generateToken} = require('../helper/jwt');
+const { balanceFormat } = require("../helper/moneyFormat");
+const { generateToken } = require("../helper/jwt");
 const { User } = require("../models");
 
 class UserController {
@@ -15,105 +16,156 @@ class UserController {
         email,
         role,
       });
-      return res.status(201).json({ user: {id:data.id, full_name, email, gender, balance: data.balance, createdAt: data.createdAt} });
+      return res.status(201).json({
+        user: {
+          id: data.id,
+          full_name,
+          email,
+          gender,
+          balance: balanceFormat(data.balance),
+          createdAt: data.createdAt,
+        },
+      });
     } catch (error) {
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
 
   static async userLogin(req, res) {
     try {
-      const {email, password} = req.body;
+      const { email, password } = req.body;
       const data = await User.findOne({
         where: {
-          email
-        }
-      })
-      if(!data){
-        return res.status(404).json({message: 'User not Found'})
+          email,
+        },
+      });
+      if (!data) {
+        return res.status(404).json({ message: "User not Found" });
       }
       const comparedPassword = comparePassword(password, data.password);
-      if(comparedPassword){
+      if (comparedPassword) {
         const token = generateToken({
           id: data.id,
-          role: data.role
-        })
-        return res.status(200).json({token})
+          role: data.role,
+        });
+        return res.status(200).json({ token });
+      } else {
+        return res.status(404).json({ message: "Email and Password is wrong" });
       }
     } catch (error) {
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
 
-  static async updateUser(req, res){
+  static async updateUser(req, res) {
     try {
-      const {userId} = req.params;
-      const {full_name, email} = req.body;
+      const { userId } = req.params;
+      const { full_name, email } = req.body;
 
       const data = {
         full_name,
-        email
+        email,
       };
 
       await User.update(data, {
         where: {
-          id: userId
-        }
+          id: userId,
+        },
       });
       const userUpdate = await User.findOne({
         where: {
-          id: userId
-        }
-      })
+          id: userId,
+        },
+      });
       return res.status(200).json({
         user: {
           id: userUpdate.id,
           full_name: userUpdate.full_name,
           email: userUpdate.email,
           createdAt: userUpdate.createdAt,
-          updatedAt: userUpdate.updatedAt
-        }
+          updatedAt: userUpdate.updatedAt,
+        },
       });
     } catch (error) {
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
 
-  static async deleteUser(req, res){
+  static async deleteUser(req, res) {
     try {
-      const {userId} = req.params;
+      const { userId } = req.params;
       await User.destroy({
         where: {
-          id: userId
-        }
+          id: userId,
+        },
       });
-      return res.status(200).json({message: "Your account has been successfully deleted"});
+      return res
+        .status(200)
+        .json({ message: "Your account has been successfully deleted" });
     } catch (error) {
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
 
-  static async topUpUser(req, res){
+  static async topUpUser(req, res) {
     try {
-      const {balance} = req.body;
+      const { balance } = req.body;
       const authenticationUserId = authUser.id;
       const data = await User.findOne({
-        where:{
-          id: authenticationUserId
-        }
+        where: {
+          id: authenticationUserId,
+        },
       });
       let newBalance = Number(balance) + Number(data.balance);
-      console.log(newBalance);
-      console.log(authenticationUserId);
-      await User.update({
-        balance: newBalance
-      },{
-        where: {
-          id: authenticationUserId
+      await User.update(
+        {
+          balance: newBalance,
+        },
+        {
+          where: {
+            id: authenticationUserId,
+          },
         }
+      );
+      return res.status(200).json({
+        message: `Your balance has been successfully updated to Rp ${newBalance}`,
       });
-      return res.status(200).json({message: `Your balance has been successfully updated to Rp ${newBalance}`});
     } catch (error) {
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
