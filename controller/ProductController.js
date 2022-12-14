@@ -42,6 +42,9 @@ class ProductController{
           id: productId
         }
       })
+      if(!dataProduct){
+        return res.status(404).json({message: "Product not found"})
+      }
       return res.status(200).json({product: dataProduct});
       
     } catch (error) {
@@ -66,6 +69,9 @@ class ProductController{
           id: productId
         }
       });
+      if(!dataProduct){
+        return res.status(404).json({message: "Product not found"})
+      }
       return res.status(200).json(dataProduct);
     } catch (error) {
       if(error.name === 'SequelizeForeignKeyConstraintError'){
