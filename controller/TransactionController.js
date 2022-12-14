@@ -6,13 +6,15 @@ class TransactionController {
     try {
       const { ProductId, quantity } = req.body;
       const userId = authUser.id;
-
       // ! Product
       const dataProduct = await Product.findOne({
         where: {
           id: ProductId,
         },
       });
+      if(!dataProduct){
+        return res.status(404).json({message: "ProductId not found"});
+      }
 
       // ! User
       const userData = await User.findOne({
@@ -28,10 +30,6 @@ class TransactionController {
         },
       });
 
-      // ! check data product
-      if (!dataProduct) {
-        return res.status(404).json({ message: "Product not found" });
-      }
       // ! check stock product
       if (quantity > dataProduct.stock) {
         return res
@@ -113,17 +111,18 @@ class TransactionController {
       const UserId = authUser.id;
       const dataTransaction = await TransactionHistory.findAll(
         {
+          where: {
+            UserId,
+          },
+        },
+        {
           include: {
             model: Product,
             attributes: ["id", "title", "price", "stock", "CategoryId"],
           },
         },
-        {
-          where: {
-            UserId,
-          },
-        }
       );
+      console.log(UserId);
       return res.status(200).json({ transactionHistories: dataTransaction });
     } catch (error) {
       let errorMes = error.name;

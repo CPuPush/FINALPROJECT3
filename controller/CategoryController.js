@@ -25,7 +25,7 @@ class CategoryController {
       const data = await Category.findAll({
         include: Product,
       });
-      return res.status(500).json({ categorries: data });
+      return res.status(500).json({ categories: data });
     } catch (error) {
       let errorMes = error.name;
       if (

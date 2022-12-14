@@ -19,7 +19,7 @@ module.exports = {
         gender: "male",
         password: hashPassword("admin"),
         role: "admin",
-        balance: 10000000000,
+        balance: 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       },

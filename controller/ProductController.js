@@ -30,6 +30,13 @@ class ProductController {
           .status(400)
           .json({ message: "CategoryId is not present in Category Table" });
       }
+      let errorMes = error.name;
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
@@ -85,6 +92,12 @@ class ProductController {
           .status(400)
           .json({ message: "CategoryId is not present in Category Table" });
       }
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
+      }
       return res.status(500).json(error);
     }
   }
@@ -130,6 +143,12 @@ class ProductController {
         return res
           .status(400)
           .json({ message: "CategoryId is not present in Category Table" });
+      }
+      if (
+        errorMes === "SequelizeUniqueConstraintError" ||
+        errorMes === "SequelizeValidationError"
+      ) {
+        return res.status(400).json({ message: error.errors[0].message });
       }
       return res.status(500).json(error);
     }

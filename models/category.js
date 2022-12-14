@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           args: true,
           msg: "sold_product_amount cannot be empty"
+        },
+        isInt: {
+          args: true,
+          msg: "Please enter valid sold sold_product_amount"
         }
       }
     }

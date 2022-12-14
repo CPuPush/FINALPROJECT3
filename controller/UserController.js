@@ -7,11 +7,10 @@ class UserController {
   static async userRegister(req, res) {
     try {
       const { full_name, password, gender, email } = req.body;
-      const hashedPassword = hashPassword(password);
       const role = "customer";
       const data = await User.create({
         full_name,
-        password: hashedPassword,
+        password,
         gender,
         email,
         role,
