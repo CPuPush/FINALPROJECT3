@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             msg: "stock cant be empty",
           },
           isInt: {
-            args: true,
+            // args: false,
             msg: "Stock has integer data type",
           },
           min: 5,

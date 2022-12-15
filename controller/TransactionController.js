@@ -41,11 +41,21 @@ class TransactionController {
       if (totalPrice > userData.balance) {
         return res.status(400).json({ message: "Your balance is not enough" });
       }
+      // ! TransactionHistories
+      const data = {
+        ProductId,
+        UserId: userId,
+        quantity,
+        total_price: totalPrice,
+      };
+      const dataHistory = await TransactionHistory.create(data);
       // ! update stock product
       const newStock = dataProduct.stock - quantity;
+      console.log();
+      console.log(newStock);
       await Product.update(
         {
-          stock: newStock,
+          stock: +newStock,
         },
         {
           where: {
@@ -53,6 +63,7 @@ class TransactionController {
           },
         }
       );
+      
       // ! update user balance
       const newBalance = userData.balance - totalPrice;
       await User.update(
@@ -77,14 +88,7 @@ class TransactionController {
           },
         }
       );
-      // ! TransactionHistories
-      const data = {
-        ProductId,
-        UserId: userId,
-        quantity,
-        total_price: totalPrice,
-      };
-      const dataHistory = await TransactionHistory.create(data);
+
       // ! RESULT
       return res.status(201).json({
         message: "You have successfully purchase the product",
@@ -109,21 +113,24 @@ class TransactionController {
   static async getTransactionUser(req, res) {
     try {
       const UserId = authUser.id;
+      console.log(UserId);
       const dataTransaction = await TransactionHistory.findAll(
         {
-          where: {
-            UserId,
+          where:{
+            UserId: +UserId
           },
-        },
-        {
           include: {
             model: Product,
             attributes: ["id", "title", "price", "stock", "CategoryId"],
           },
         },
       );
-      console.log(UserId);
-      return res.status(200).json({ transactionHistories: dataTransaction });
+      console.log(dataTransaction[0]);
+      const testData = dataTransaction.map((data) => {
+        // console.log(data[0]);  
+        return {...data, total_price: balanceFormat(data.total_price), }}
+      );
+      return res.status(200).json({ transactionHistories: testData });
     } catch (error) {
       let errorMes = error.name;
       if (
@@ -135,7 +142,9 @@ class TransactionController {
       return res.status(500).json(error);
     }
   }
-
+  // Product: {
+  //   ...data.Product, price: balanceFormat(data.Product.price)
+  
   static async getTransactionAdmin(req, res) {
     try {
       const dataTransaction = await TransactionHistory.findAll({
