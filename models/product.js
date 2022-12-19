@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { balanceFormat } = require("../helper/moneyFormat");
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -37,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
           },
           max: 50000000,
           min: 0,
+        },
+        get() {
+          return balanceFormat(this.getDataValue("price"));
         },
       },
       stock: {

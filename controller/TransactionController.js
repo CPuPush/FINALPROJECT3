@@ -12,8 +12,8 @@ class TransactionController {
           id: ProductId,
         },
       });
-      if(!dataProduct){
-        return res.status(404).json({message: "ProductId not found"});
+      if (!dataProduct) {
+        return res.status(404).json({ message: "ProductId not found" });
       }
 
       // ! User
@@ -63,7 +63,7 @@ class TransactionController {
           },
         }
       );
-      
+
       // ! update user balance
       const newBalance = userData.balance - totalPrice;
       await User.update(
@@ -114,23 +114,21 @@ class TransactionController {
     try {
       const UserId = authUser.id;
       console.log(UserId);
-      const dataTransaction = await TransactionHistory.findAll(
-        {
-          where:{
-            UserId: +UserId
-          },
-          include: {
-            model: Product,
-            attributes: ["id", "title", "price", "stock", "CategoryId"],
-          },
+      const dataTransaction = await TransactionHistory.findAll({
+        where: {
+          UserId: +UserId,
         },
-      );
+        include: {
+          model: Product,
+          attributes: ["id", "title", "price", "stock", "CategoryId"],
+        },
+      });
       console.log(dataTransaction[0]);
-      const testData = dataTransaction.map((data) => {
-        // console.log(data[0]);  
-        return {...data, total_price: balanceFormat(data.total_price), }}
-      );
-      return res.status(200).json({ transactionHistories: testData });
+      // const testData = dataTransaction.map((data) => {
+      //   // console.log(data[0]);
+      //   return {...data, total_price: balanceFormat(data.total_price), }}
+      // );
+      return res.status(200).json({ transactionHistories: dataTransaction });
     } catch (error) {
       let errorMes = error.name;
       if (
@@ -144,7 +142,7 @@ class TransactionController {
   }
   // Product: {
   //   ...data.Product, price: balanceFormat(data.Product.price)
-  
+
   static async getTransactionAdmin(req, res) {
     try {
       const dataTransaction = await TransactionHistory.findAll({
