@@ -1,5 +1,5 @@
 const { Product } = require("../models");
-const { balanceFormat } = require("../helper/moneyFormat");
+// const { balanceFormat } = require("../helper/moneyFormat");
 
 class ProductController {
   static async postProduct(req, res) {
@@ -17,7 +17,8 @@ class ProductController {
         product: {
           id: data.id,
           title,
-          price: balanceFormat(data.price),
+          // price: balanceFormat(data.price),
+          price: data.price,
           stock,
           CategoryId,
           updatedAt: data.updatedAt,
@@ -79,7 +80,8 @@ class ProductController {
         product: {
           id: dataProduct.id,
           title,
-          price: balanceFormat(dataProduct.price),
+          // price: balanceFormat(dataProduct.price),
+          price: dataProduct.price,
           stock,
           CategoryId: dataProduct.CategoryId,
           updatedAt: dataProduct.updatedAt,
@@ -131,7 +133,8 @@ class ProductController {
         product: {
           id: dataProduct.id,
           title: dataProduct.title,
-          price: balanceFormat(dataProduct.price),
+          // price: balanceFormat(dataProduct.price),
+          price: dataProduct.price,
           stock: dataProduct.stock,
           CategoryId,
           updatedAt: dataProduct.updatedAt,

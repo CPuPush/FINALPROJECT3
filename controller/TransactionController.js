@@ -37,7 +37,8 @@ class TransactionController {
           .json({ message: "Quantity exceeds Product stock" });
       }
       // ! check user balance
-      const totalPrice = quantity * dataProduct.price;
+      const totalPrice = quantity * dataProduct.getDataValue("price");
+      console.log(totalPrice);
       if (totalPrice > userData.balance) {
         return res.status(400).json({ message: "Your balance is not enough" });
       }
@@ -93,7 +94,8 @@ class TransactionController {
       return res.status(201).json({
         message: "You have successfully purchase the product",
         transactionBill: {
-          total_price: balanceFormat(dataHistory.total_price),
+          // total_price: balanceFormat(dataHistory.total_price),
+          total_price: dataHistory.total_price,
           quantity: dataHistory.quantity,
           product_name: dataProduct.title,
         },
