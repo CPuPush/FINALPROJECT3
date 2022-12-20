@@ -11,7 +11,7 @@ const authorizationTransaction = require("../middleware/authorizationTransaction
 const authorizationTransactionId = require("../middleware/authorizationTransactionId");
 
 // ! User
-router.post("/users/register", UserController.userRegister); // checked bug
+router.post("/users/register", UserController.userRegister); // checked clear
 router.post("/users/login", UserController.userLogin); // checked clear
 router.put(
   "/users/:userId",

@@ -79,10 +79,9 @@ class ProductController {
       return res.status(200).json({
         product: {
           id: dataProduct.id,
-          title,
-          // price: balanceFormat(dataProduct.price),
+          title: dataProduct.title,
           price: dataProduct.price,
-          stock,
+          stock: dataProduct.stock,
           CategoryId: dataProduct.CategoryId,
           updatedAt: dataProduct.updatedAt,
           createdAt: dataProduct.createdAt,
@@ -146,12 +145,6 @@ class ProductController {
         return res
           .status(400)
           .json({ message: "CategoryId is not present in Category Table" });
-      }
-      if (
-        errorMes === "SequelizeUniqueConstraintError" ||
-        errorMes === "SequelizeValidationError"
-      ) {
-        return res.status(400).json({ message: error.errors[0].message });
       }
       return res.status(500).json(error);
     }
